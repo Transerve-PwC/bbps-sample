@@ -1,0 +1,152 @@
+---
+swagger: "2.0"
+info:
+  description: "ICICI BBPS Developer apis"
+  version: "1.0.0"
+  title: "ICICI BBPS for UP Property Tax payments"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "pt-dev.transerve.com"
+basePath: "/bbps"
+schemes:
+- "https"
+- "http"
+paths:
+  /bills/fetchById:
+    post:
+      tags:
+      - "bills"
+      summary: "Fetch bill by Id"
+      description: ""
+      operationId: "fetchBillById"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Bill object"
+        required: true
+        schema:
+          $ref: "#/definitions/Bill"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Bill"
+        "400":
+          description: "Invalid Order"
+      x-swagger-router-controller: "Bills"
+  /bills/payment:
+    post:
+      tags:
+      - "bills"
+      summary: "Update bill payment"
+      description: "Update payment for a bill"
+      operationId: "updateBillPayment"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/BillPaymentRequest"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/BillStatusResponse"
+        "400":
+          description: "Invalid Bill"
+      x-swagger-router-controller: "Bills"
+  /bills/fetchStatus:
+    post:
+      tags:
+      - "bills"
+      summary: "Fetch bill payment status"
+      description: "Fetch payment status for a bill"
+      operationId: "fetchBillStatus"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/BillStatusRequest"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/BillStatusResponse"
+        "400":
+          description: "Invalid Bill"
+      x-swagger-router-controller: "Bills"
+definitions:
+  Bill:
+    type: "object"
+    required:
+    - "billNo"
+    properties:
+      billNo:
+        type: "string"
+      amount:
+        type: "integer"
+        format: "int64"
+        description: "Amount in paise ex '250' for Rs 2.50"
+      billDate:
+        type: "string"
+        format: "date-time"
+    example:
+      amount: 70700
+      billDate: "2000-01-23T04:56:07.000+00:00"
+      billNo: "RCRQ/2020-07-17/6418619"
+  BillPaymentRequest:
+    type: "object"
+    properties:
+      amount:
+        type: "string"
+        format: "numeric"
+      ts:
+        type: "string"
+        format: "date-time"
+      txnReferenceId:
+        type: "string"
+      billertxnReferenceId:
+        type: "string"
+      paymentMode:
+        type: "string"
+  BillStatusRequest:
+    type: "object"
+    properties:
+      txnReferenceId:
+        type: "string"
+      billertxnReferenceId:
+        type: "string"
+  BillStatusResponse:
+    type: "object"
+    properties:
+      approvalRefNum:
+        type: "string"
+      responseCode:
+        type: "string"
+        pattern: "numeric"
+      responseReason:
+        type: "string"
+        enum:
+        - "Successful"
+        - "Failure"
+        - "Pending"
+    example:
+      responseReason: "Successful"
+      approvalRefNum: "AB123456"
+      responseCode: "000"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
