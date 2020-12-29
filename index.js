@@ -33,7 +33,10 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   app.use(middleware.swaggerRouter(options));
 
   // Serve the Swagger documents and Swagger UI
-  app.use(middleware.swaggerUi());
+  app.use(middleware.swaggerUi({
+    apiDocs : '/bbps/api-docs',
+    swaggerUi: '/bbps/docs/'
+  }));
 
   // Start the server
   http.createServer(app).listen(serverPort, function () {
